@@ -1,4 +1,9 @@
+
 spring:
+  security:
+    user:
+      name: admin
+      password: admin123
   datasource:
     url: jdbc:postgresql://localhost:5432/tooldb
     username: postgres
