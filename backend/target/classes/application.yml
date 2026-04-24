@@ -5,9 +5,9 @@ spring:
       name: admin
       password: admin123
   datasource:
-    url: jdbc:postgresql://localhost:5432/tooldb
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: postgres
+    password: postgres123
 
   jpa:
     hibernate:

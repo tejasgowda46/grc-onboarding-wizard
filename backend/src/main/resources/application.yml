@@ -7,7 +7,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/tooldb
     username: postgres
-    password: postgres
+    password: postgres123
 
   jpa:
     hibernate:
