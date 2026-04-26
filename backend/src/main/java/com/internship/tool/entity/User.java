@@ -12,23 +12,33 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //  Validation added
+    // Name
     @NotBlank(message = "Name is required")
     @Column(nullable = false)
     private String name;
 
-    //  Validation added
+    // Email
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     @Column(nullable = false, unique = true)
     private String email;
 
+    // ✅ ADD THIS (VERY IMPORTANT)
+    @NotBlank(message = "Password is required")
+    @Column(nullable = false)
+    private String password;
+
+    // Default constructor
     public User() {}
 
-    public User(String name, String email) {
+    // Constructor
+    public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
+        this.password = password;
     }
+
+    // Getters & Setters
 
     public Long getId() {
         return id;
@@ -48,5 +58,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
