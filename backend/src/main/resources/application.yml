@@ -25,7 +25,7 @@ spring:
     password: test
 
 server:
-  port: 8081
+  port: 8080
 
 jwt:
   secret: mysecretkey
