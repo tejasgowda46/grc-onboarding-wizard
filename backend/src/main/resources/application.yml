@@ -1,14 +1,14 @@
 spring:
   security:
     user:
-      name: admin
-      password: ${ADMIN_PASSWORD}
-  
+      name: ${APP_USER:admin}
+      password: ${APP_PASSWORD:admin123}
+
   datasource:
-    url: ${DB_URL}
+    url: jdbc:postgresql://localhost:5432/tooldb
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-  
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -35,7 +35,7 @@ spring:
             enable: true
 
 server:
-  port: 8080
+  port: 8081
 
 jwt:
   secret: ${JWT_SECRET}
