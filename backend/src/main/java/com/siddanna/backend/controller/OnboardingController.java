@@ -1,10 +1,13 @@
 package com.siddanna.backend.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,10 +39,34 @@ public class OnboardingController {
         return repo.save(data);
     }
 
-    // ✅ READ (Pagination + Soft Delete)
+    // ✅ READ (Pagination + Date Filter + Soft Delete)
     @GetMapping
-    public Page<Onboarding> getAll(Pageable pageable) {
+    public Page<Onboarding> getAll(
+            Pageable pageable,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate
+    ) {
+
+        // 🔥 DATE FILTER LOGIC
+        if (startDate != null && endDate != null &&
+            !startDate.isEmpty() && !endDate.isEmpty()) {
+
+            LocalDateTime start = LocalDate.parse(startDate).atStartOfDay();
+            LocalDateTime end = LocalDate.parse(endDate).atTime(23, 59);
+
+            return repo.findByDeletedFalseAndCreatedAtBetween(start, end, pageable);
+        }
+
+        // DEFAULT
         return repo.findByDeletedFalse(pageable);
+    }
+
+    // ✅ GET BY ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Onboarding> getById(@PathVariable Long id) {
+        return repo.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // ✅ UPDATE
@@ -72,17 +99,13 @@ public class OnboardingController {
                 .toList();
     }
 
-    // 🔥 NEW: STATS API (DAY 6)
+    // ✅ STATS API
     @GetMapping("/stats")
     public Map<String, Long> getStats() {
 
         long total = repo.count();
-
-        long active = repo.findByDeletedFalse(
-                org.springframework.data.domain.PageRequest.of(0, 1000)
-        ).getTotalElements();
-
-        long deleted = total - active;
+        long active = repo.countByDeletedFalse();
+        long deleted = repo.countByDeletedTrue();
 
         Map<String, Long> stats = new HashMap<>();
         stats.put("total", total);
