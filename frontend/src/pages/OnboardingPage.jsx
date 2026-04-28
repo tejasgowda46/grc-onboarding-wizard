@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ NEW
 import API from "../services/api";
 
 function OnboardingPage() {
+  const navigate = useNavigate(); // ✅ NEW
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -9,34 +12,29 @@ function OnboardingPage() {
     description: "",
   });
 
-  const [dataList, setDataList] = useState([]); // ✅ MUST be array
+  const [dataList, setDataList] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // ✅ FETCH DATA (pagination)
+  // ✅ FETCH DATA
   const fetchData = async () => {
     try {
       setLoading(true);
       const res = await API.get(`/onboarding?page=${page}&size=5`);
-
-      console.log("API response:", res.data); // debug
-
-      // ✅ IMPORTANT FIX
       setDataList(res.data.content || []);
     } catch (err) {
       console.error("Fetch error:", err);
-      setDataList([]); // safe fallback
+      setDataList([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // ✅ call on page change
   useEffect(() => {
     fetchData();
   }, [page]);
 
-  // ✅ handle input
+  // ✅ INPUT CHANGE
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -44,7 +42,7 @@ function OnboardingPage() {
     });
   };
 
-  // ✅ submit form
+  // ✅ SUBMIT
   const handleSubmit = async () => {
     try {
       await API.post("/onboarding", formData);
@@ -56,7 +54,7 @@ function OnboardingPage() {
         description: "",
       });
 
-      fetchData(); // refresh list
+      fetchData();
     } catch (error) {
       console.error("Submit error:", error);
     }
@@ -129,7 +127,11 @@ function OnboardingPage() {
             <tbody>
               {Array.isArray(dataList) && dataList.length > 0 ? (
                 dataList.map((item) => (
-                  <tr key={item.id}>
+                  <tr
+                    key={item.id}
+                    onClick={() => navigate(`/detail/${item.id}`)} // ✅ CLICK NAVIGATION
+                    className="cursor-pointer hover:bg-gray-100"
+                  >
                     <td className="border p-2">{item.name}</td>
                     <td className="border p-2">{item.email}</td>
                     <td className="border p-2">{item.role}</td>

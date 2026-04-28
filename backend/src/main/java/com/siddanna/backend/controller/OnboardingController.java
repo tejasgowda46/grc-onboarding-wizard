@@ -1,8 +1,20 @@
 package com.siddanna.backend.controller;
 
-import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.siddanna.backend.model.Onboarding;
 import com.siddanna.backend.repository.OnboardingRepository;
@@ -58,5 +70,25 @@ public class OnboardingController {
                 .filter(o -> !Boolean.TRUE.equals(o.getDeleted()))
                 .filter(o -> o.getName().toLowerCase().contains(q.toLowerCase()))
                 .toList();
+    }
+
+    // 🔥 NEW: STATS API (DAY 6)
+    @GetMapping("/stats")
+    public Map<String, Long> getStats() {
+
+        long total = repo.count();
+
+        long active = repo.findByDeletedFalse(
+                org.springframework.data.domain.PageRequest.of(0, 1000)
+        ).getTotalElements();
+
+        long deleted = total - active;
+
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("total", total);
+        stats.put("active", active);
+        stats.put("deleted", deleted);
+
+        return stats;
     }
 }
