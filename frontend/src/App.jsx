@@ -3,6 +3,7 @@ import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import OnboardingPage from "./pages/OnboardingPage";
 import DetailPage from "./pages/DetailPage";
+import AnalyticsPage from "./pages/AnalyticsPage"; // 🔥 NEW
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
           }
         />
 
-        {/* 🔥 EDIT PAGE (VERY IMPORTANT) */}
+        {/* EDIT PAGE */}
         <Route
           path="/edit/:id"
           element={
@@ -49,6 +50,16 @@ function App() {
           element={
             <ProtectedRoute>
               <DetailPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 🔥 ANALYTICS PAGE (DAY 10) */}
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <AnalyticsPage />
             </ProtectedRoute>
           }
         />
